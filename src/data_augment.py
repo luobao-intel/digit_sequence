@@ -10,12 +10,15 @@ class DataAugmentation(object):
     add noise points
     erode or dilate the image
     """
-    def __init__(self, angle=15, noise=True, dilate=True, erode=True, warp=True):
+    def __init__(self, rotate_angle=40, angle=15, noise=True, dilate=True, erode=True, warp=True, rotate=True):
+        self.rotate_angle = rotate_angle
         self.angle = angle
+        self.warp_angle = angle
         self.noise = noise
         self.dilate = dilate
         self.erode = erode
         self.warp = warp
+        self.rotate = rotate
 
     @classmethod
     def add_noise(cls, img):
@@ -51,6 +54,14 @@ class DataAugmentation(object):
                 iWarp[i, y] = image[i, j]
         return iWarp
 
+    @classmethod
+    def Rotate(cls, img, rotate_angle):
+        img = Image.fromarray(img)
+        angle = random.uniform(-rotate_angle, rotate_angle)
+        img = img.rotate(angle)
+        img = np.asarray(img)
+        return img
+
     def do(self, img_list=[]):
         aug_list = []
         # aug_list = copy.deepcopy(img_list)
@@ -60,6 +71,8 @@ class DataAugmentation(object):
                 im = self.add_noise(im)
             if self.warp and random.random() < 0.7:
                 im = self.Warp(im, self.angle)
+            if self.rotate and random.random() < 0.5:
+                im = self.Rotate(im, self.rotate_angle)
             if random.random() < 0.5:
                 if self.dilate and random.random() < 0.5:
                     im = self.add_dilate(im)
@@ -142,33 +155,18 @@ class Digit2Image(object):
     Rotate the digit randomly
     """
     def __init__(self,
-                 width, height,set_height,
-                 need_crop, margin):
+                 width, height,set_height, margin):
         self.width = width
         self.height = height
         self.set_height = set_height
-        self.need_crop = need_crop
         self.margin = margin
 
-    def do(self, res, rotate=0):
+    def do(self, res):
         find_image_bbox = FindImageBBox()
-        img = Image.fromarray(res)
-        if rotate != 0:
-            rotate = random.uniform(-rotate,rotate)
-            img = img.rotate(rotate)
-        data = list(img.getdata())
-        sum_val = 0
-        for i_data in data:
-            sum_val += i_data
-        if sum_val > 2:
-            np_img = np.asarray(data, dtype='uint8')
-            np_img = np_img.reshape((self.height, self.width))
-            if self.need_crop:
-                cropped_box = find_image_bbox.do(np_img)
-                left, upper, right, lower = cropped_box
-                np_img = np_img[upper: lower + 1, left: right + 1]
-                np_img = cv2.copyMakeBorder(np_img, self.margin, self.margin, 0, 0, cv2.BORDER_CONSTANT, value=0)
-                np_img = cv2.resize(np_img,(int(self.width*(right-left+1)/self.height), self.set_height))
-            return np_img
-        else:
-            logging.error("img doesn't exist.")
+        np_img = res
+        cropped_box = find_image_bbox.do(np_img)
+        left, upper, right, lower = cropped_box
+        np_img = np_img[upper: lower + 1, left: right + 1]
+        np_img = cv2.copyMakeBorder(np_img, self.margin, self.margin, 0, 0, cv2.BORDER_CONSTANT, value=0)
+        np_img = cv2.resize(np_img,(int(self.width*(right-left+1)/self.height), self.set_height))
+        return np_img

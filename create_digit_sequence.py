@@ -29,15 +29,17 @@ class CreateImage(object):
                 sample = dataset[index][rand_seed]
                 image_list.append(sample)
 
-            if self.opt.need_aug:
+            if self.opt.need_crop:
                 image = []
-                model = Digit2Image(sample.shape[0], sample.shape[1], self.opt.image_height, self.opt.need_crop, self.opt.margin)
+                model = Digit2Image(sample.shape[0], sample.shape[1], self.opt.image_height,  self.opt.margin)
                 for pic in image_list:
-                    trans_image = model.do(pic, self.opt.rotate)
+                    trans_image = model.do(pic)
                     image.append(trans_image)
+                image_list = image
 
-                data_aug = DataAugmentation()
-                image_list = data_aug.do(image)
+            if self.opt.need_aug:
+                data_aug = DataAugmentation(self.opt.rotate)
+                image_list = data_aug.do(image_list)
 
             index = 1
             for _ in range(len(number) - 1):
@@ -63,6 +65,6 @@ class CreateImage(object):
             if save:
                 logging.info("successfully save image {0}_{1}.jpg".format(number,count))
             else:
-                logging.info("fail to save image {0}_{1}.jpg".format(number, count))
+                logging.error("fail to save image {0}_{1}.jpg".format(number, count))
 
-        # self.show(res_img)
+        self.show(res_img)
