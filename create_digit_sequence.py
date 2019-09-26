@@ -67,4 +67,5 @@ class CreateImage(object):
             else:
                 logging.error("fail to save image {0}_{1}.jpg".format(number, count))
 
-        self.show(res_img)
+        if batch==1:
+            self.show(res_img)

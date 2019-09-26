@@ -14,6 +14,10 @@ This code is tested on:
 - Pillow          6.1.0
 - six             1.12.0
 
+## **Install**
+```
+python3 set_up.py install
+```
 ## **Usage**
 ```
 usage: run.py [-h] [-d DATA_DIR] [-s IMAGE_DIR] [-n NUMBER] [-w IMAGE_WIDTH]
@@ -48,7 +52,41 @@ optional arguments:
                         max rotate degree 0-45
   -bn BATCH_NUM, --batch_num BATCH_NUM
                         the batch number if need different digit sequences
-```
+
+C:\Users\leiling\PycharmProjects\untitled1\venv\Scripts>python C:\Users\leiling\Desktop\create_sequence\run.py --help
+usage: run.py [-h] [-d DATA_DIR] [-s IMAGE_DIR] [-n NUMBER] [-w IMAGE_WIDTH]
+              [-ht IMAGE_HEIGHT] [-min MIN_SPACING] [-max MAX_SPACING] [-c]
+              [-a] [-b] [-m MARGIN] [-r ROTATE] [-bn BATCH_NUM]
+
+    python create_digit_sequence.py -n 123456 -w 200 -ht 28 -min 5 -max 10 -c  -b -bn 100 -a -m 4 -r 30
+
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d DATA_DIR, --data_dir DATA_DIR
+                        dir to save the MNIST dataset
+  -s IMAGE_DIR, --image_dir IMAGE_DIR
+                        dir to save the produced images
+  -n NUMBER, --number NUMBER
+                        A string representing the number
+  -w IMAGE_WIDTH, --image_width IMAGE_WIDTH
+                        The image width
+  -ht IMAGE_HEIGHT, --image_height IMAGE_HEIGHT
+                        the image height
+  -min MIN_SPACING, --min_spacing MIN_SPACING
+                        The minimum spacing between digits
+  -max MAX_SPACING, --max_spacing MAX_SPACING
+                        The maximum spacing between digits
+  -c, --need_crop       Cut out the redundant border
+  -a, --need_aug        need data augmentation
+  -b, --need_batch      need different digit sequences with same number input
+  -m MARGIN, --margin MARGIN
+                        The padding width
+  -r ROTATE, --rotate ROTATE
+                        max rotate degree 0-45
+  -bn BATCH_NUM, --batch_num BATCH_NUM
+                        the batch number if need different digit sequences
+```  
 
 ## **Function**
 

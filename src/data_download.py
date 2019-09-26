@@ -8,6 +8,7 @@ import traceback
 import fnmatch
 import numpy as np
 import logging
+logging.getLogger().setLevel(logging.INFO)
 
 class DatasetAccess(object):
     """
